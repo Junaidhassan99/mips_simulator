@@ -53,37 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
     String currentHexAddress = '00400000';
 
     instructionList = [];
-    setState(() {
-      _textEditorController.text.split('\n').forEach((line) {
-        line = line.trim();
-        if (line.isNotEmpty) {
-          Instruction instruction = TranslationUtilities.decoder(line);
-
-          instruction.instructionAddress = currentHexAddress;
-
-          instructionList.add(instruction);
-        }
-
-        currentHexAddress =
-            TranslationUtilities.incrementHexAddress(currentHexAddress);
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    //testing
-
-    String currentHexAddress = '00400000';
-
-    String testText =
-        "addi \$t1, \$s3, 16\nLoop:\nbne \$t0, \$s5, Exit\nExit:\nbgtz \$t9, Exit\nj Loop";
-    //String testText = "addi \$t1, \$s3, 16";
-
-    instructionList = [];
     branchList = [];
     setState(() {
-      testText.split('\n').forEach((line) {
+      _textEditorController.text.split('\n').forEach((line) {
         line = line.trim();
 
         if (line.contains(':')) {
@@ -94,6 +66,9 @@ class _HomeScreenState extends State<HomeScreen> {
           Instruction instruction = TranslationUtilities.decoder(line);
 
           instruction.instructionAddress = currentHexAddress;
+
+          instruction.result =
+              TranslationUtilities.executeAccordingToType(x, instruction);
 
           instructionList.add(instruction);
         } else {
@@ -118,6 +93,15 @@ class _HomeScreenState extends State<HomeScreen> {
       //   }
       // });
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //testing
+
+    // String testText =
+    //     "addi \$t1, \$s3, 16\nLoop:\nbne \$t0, \$s5, Exit\nExit:\nbgtz \$t9, Exit\nj Loop";
+    //String testText = "addi \$t1, \$s3, 16";
 
     //
     return Scaffold(

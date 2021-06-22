@@ -23,24 +23,38 @@ class DispInstruction extends StatelessWidget {
           SizedBox(
             height: 3,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                  "Instruction Address: ${_nullhandler(instruction.instructionAddress)}"),
-              Text("OP-Code: ${_nullhandler(instruction.op_code)}"),
-              Text("Shift: ${_nullhandler(instruction.shift)}"),
-              Text("Funct: ${_nullhandler(instruction.funct)}"),
-              Text(
-                  "Instruction Type: ${_nullhandler(instruction.type.toUpperCase())}"),
-              Text("RS: ${_nullhandler(instruction.rs)}"),
-              Text("RT: ${_nullhandler(instruction.rt)}"),
-              Text("RD: ${_nullhandler(instruction.rd)}"),
-              //Text("Value: ${_nullhandler(instruction.value)}"),
-              Text("Target Address: ${_nullhandler(instruction.target)}"),
-              Divider(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                      "Instruction Address: ${_nullhandler(instruction.instructionAddress)}"),
+                  Text("OP-Code: ${_nullhandler(instruction.op_code)}"),
+                  Text("Shift: ${_nullhandler(instruction.shift)}"),
+                  Text("Funct: ${_nullhandler(instruction.funct)}"),
+                  Text(
+                      "Instruction Type: ${_nullhandler(instruction.type.toUpperCase())}"),
+                  Text("RS: ${_nullhandler(instruction.rs)}"),
+                  Text("RT: ${_nullhandler(instruction.rt)}"),
+                  Text("RD: ${_nullhandler(instruction.rd)}"),
+                  //Text("Value: ${_nullhandler(instruction.value)}"),
+                  Text("Target Address: ${_nullhandler(instruction.target)}"),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Result: ${_nullhandler(instruction.result)}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ],
           ),
+          Divider(),
         ],
       ),
     );

@@ -18,17 +18,20 @@ class Instruction {
   String? funct;
   //unknown-bit
   String? target;
+  String? result;
 
   Instruction({
     required this.type,
     required this.op_code,
     required this.instructionAddress,
+    this.result,
     this.funct,
     this.target,
     this.rd,
     this.rs,
     this.rt,
     this.shift,
+
     //this.value,
   });
 }

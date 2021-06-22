@@ -23,6 +23,103 @@ class TranslationUtilities {
     }
   }
 
+  static String executeAccordingToType(List<int> mX, Instruction instruction) {
+    if (instruction.type == 'r') {
+      int a = mX[binaryToDecimal(instruction.rs!)];
+      int b = mX[binaryToDecimal(instruction.rt!)];
+
+      int result = 0;
+
+      switch (instruction.funct) {
+        //add
+        case '100000':
+          {
+            result = a + b;
+            break;
+          }
+        //sub
+        case '100010':
+          {
+            result = a - b;
+            break;
+          }
+        //mult
+        case '011000':
+          {
+            result = a * b;
+            break;
+          }
+        default:
+          {
+            print('error');
+            break;
+          }
+      }
+
+      mX[binaryToDecimal(instruction.rd!)] = result;
+      return result.toString();
+    } else if (instruction.type == 'j') {
+      String result = '';
+      switch (instruction.op_code) {
+        case '000010':
+          {
+            result = 'Jump to ${instruction.target}';
+            break;
+          }
+        default:
+          {
+            print('error');
+          }
+      }
+
+      return result;
+    } else {
+      int a = mX[binaryToDecimal(instruction.rs!)];
+      int b = mX[binaryToDecimal(instruction.rt!)];
+
+      String result = '';
+      switch (instruction.op_code) {
+
+        //beq
+        case '000100':
+          {
+            result = (a == b).toString();
+            break;
+          }
+        //bne
+        case '000101':
+          {
+            result = (a != b).toString();
+            break;
+          }
+        //bgtz
+        case '000111':
+          {
+            result = (a > 0).toString();
+            break;
+          }
+        //blez
+        case '000110':
+          {
+            result = (a <= 0).toString();
+            break;
+          }
+        //addi
+        case '001000':
+          {
+            result = (a + binaryToDecimal(instruction.target!)).toString();
+            break;
+          }
+        default:
+          {
+            print('error');
+          }
+      }
+
+      return result;
+    }
+  }
+
   //number is always in int
   static String decimalToBinary(int number) {
     return number.toRadixString(2);
@@ -68,10 +165,10 @@ class TranslationUtilities {
           break;
         }
 
-      case 'div':
+      case 'sub':
         {
           op_code = '000000';
-          funct = '011010';
+          funct = '100010';
           shift = '000000';
           break;
         }
@@ -220,8 +317,8 @@ class TranslationUtilities {
       switch (instruction.funct) {
         //add
         case '100000':
-        //div
-        case '011010':
+        //sub
+        case '100010':
         //mult
         case '011000':
           {
