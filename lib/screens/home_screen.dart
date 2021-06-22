@@ -49,14 +49,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _runSimulation() {
+    String currentHexAddress = '00400000';
+
     instructionList = [];
     setState(() {
       _textEditorController.text.split('\n').forEach((line) {
         line = line.trim();
         if (line.isNotEmpty) {
           Instruction instruction = TranslationUtilities.decoder(line);
+
+          instruction.instructionAddress = currentHexAddress;
+
           instructionList.add(instruction);
         }
+
+        currentHexAddress =
+            TranslationUtilities.incrementHexAddress(currentHexAddress);
       });
     });
   }
@@ -64,6 +72,29 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     //testing
+
+    String currentHexAddress = '00400000';
+
+    String testText =
+        "addi \$t1, \$s3, 16\nbne \$t0, \$s5, Exit\nbgtz \$t9, Exit\nj Loop";
+
+    instructionList = [];
+    setState(() {
+      testText.split('\n').forEach((line) {
+        line = line.trim();
+        if (line.isNotEmpty) {
+          Instruction instruction = TranslationUtilities.decoder(line);
+
+          instruction.instructionAddress = currentHexAddress;
+
+          instructionList.add(instruction);
+        }
+
+        currentHexAddress =
+            TranslationUtilities.incrementHexAddress(currentHexAddress);
+        print('test $currentHexAddress');
+      });
+    });
 
     // String exampleInstructionR = 'addi \$t1, \$s3, 16';
     // String exampleInstructionI1 = 'bne \$t0, \$s5, Exit';

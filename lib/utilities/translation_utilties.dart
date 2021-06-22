@@ -13,6 +13,16 @@ class TranslationUtilities {
     }
   }
 
+  static String decodeAccordingToType(Instruction instruction) {
+    if (instruction.type == 'r') {
+      return "${instruction.op_code} ${instruction.rs} ${instruction.rt} ${instruction.rd} ${instruction.shift} ${instruction.funct}";
+    } else if (instruction.type == 'j') {
+      return "${instruction.op_code} ${instruction.jumpAddress}";
+    } else {
+      return "${instruction.op_code} ${instruction.rs} ${instruction.rt} ${instruction.jumpAddress}";
+    }
+  }
+
   //number is always in int
   static String decimalToBinary(int number) {
     return number.toRadixString(2);
@@ -21,6 +31,17 @@ class TranslationUtilities {
   //binary is always in string
   static int binaryToDecimal(String binary) {
     return int.parse(binary, radix: 2);
+  }
+
+  static String incrementHexAddress(String previousHexCode) {
+    //convert hex to int
+    int dec = int.parse(previousHexCode, radix: 16);
+    //increment by 4
+    dec += 4;
+    //convert back to hex
+    previousHexCode = dec.toRadixString(16);
+
+    return fillBinaryString(previousHexCode, 8);
   }
 
   static String fillBinaryString(String binaryString, int size) {
@@ -237,12 +258,12 @@ class TranslationUtilities {
         case '001000':
           {
             //rd
-            String mRd =
+            String mRs =
                 temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
             temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
 
             //rs
-            String mRs =
+            String mRt =
                 temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
             temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
 
@@ -250,13 +271,13 @@ class TranslationUtilities {
             //value
             String mValue = decimalToBinary(int.parse(temp));
 
-            instruction.rd =
-                fillBinaryString(decimalToBinary(getRegisterSerial(mRd)), 5);
-            //print(instruction.rd);
-
             instruction.rs =
                 fillBinaryString(decimalToBinary(getRegisterSerial(mRs)), 5);
-            //print(instruction.rs);
+            //print(instruction.rd);
+
+            instruction.rt =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRt)), 5);
+            //print(instruction.rt);
 
             instruction.value = mValue;
             //print(instruction.value);
