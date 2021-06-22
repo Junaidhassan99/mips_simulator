@@ -183,18 +183,18 @@ class TranslationUtilities {
 
     // print(instruction.type);
 
-    // print('head:$head');
+    //print('head:$head');
     // print('temp:$temp');
 
     instruction.op_code = functAndOp['op']!;
-    //print(instruction.op_code);
+    print(instruction.op_code);
 
-    if (instruction.op_code == 'r') {
+    if (instruction.type == 'r') {
       instruction.funct = functAndOp['fn']!;
-      //print(instruction.funct);
+      print(instruction.funct);
 
       instruction.shift = functAndOp['st']!;
-      //print(instruction.shift);
+      print(instruction.shift);
     }
 
     if (instruction.type == 'r') {
@@ -265,7 +265,7 @@ class TranslationUtilities {
           }
         default:
           {
-            print('error');
+            print('error 1');
           }
       }
     } else if (instruction.type == 'j') {
@@ -279,7 +279,7 @@ class TranslationUtilities {
           }
         default:
           {
-            print('error');
+            print('error 2');
           }
       }
     } else if (instruction.type == 'i') {
@@ -341,7 +341,7 @@ class TranslationUtilities {
           }
         default:
           {
-            print('error');
+            print('error 3');
           }
       }
     } else {
