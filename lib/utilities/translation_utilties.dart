@@ -1,5 +1,6 @@
 import 'package:mips_simulator/enums.dart';
 import 'package:mips_simulator/models/instruction.dart';
+import 'package:intl/intl.dart';
 
 class TranslationUtilities {
   static String checkTypeOfInstruction(String op_code) {
@@ -22,12 +23,18 @@ class TranslationUtilities {
     return int.parse(binary, radix: 2);
   }
 
+  static String fillBinaryString(String binaryString, int size) {
+    return binaryString.padLeft(size, '0');
+  }
+
   static Map<String, String?> translateToGetFunctAndOpMachineCode(
       String instruction) {
     //6-bit
     String? op_code;
     //6-bit
     String? funct;
+    //6-bit
+    String? shift;
 
     switch (instruction) {
 
@@ -36,24 +43,28 @@ class TranslationUtilities {
         {
           op_code = '000000';
           funct = '100000';
+          shift = '000000';
           break;
         }
       case 'addi':
         {
           op_code = '000000';
           funct = '001000';
+          shift = '000000';
           break;
         }
       case 'div':
         {
           op_code = '000000';
           funct = '011010';
+          shift = '000000';
           break;
         }
       case 'mult':
         {
           op_code = '000000';
           funct = '011000';
+          shift = '000000';
           break;
         }
 
@@ -63,24 +74,28 @@ class TranslationUtilities {
         {
           op_code = '000100';
           funct = null;
+          shift = null;
           break;
         }
       case 'bgtz':
         {
           op_code = '000111';
           funct = null;
+          shift = null;
           break;
         }
       case 'blez':
         {
           op_code = '000110';
           funct = null;
+          shift = null;
           break;
         }
       case 'bne':
         {
           op_code = '000101';
           funct = null;
+          shift = null;
           break;
         }
 
@@ -90,6 +105,7 @@ class TranslationUtilities {
         {
           op_code = '000010';
           funct = null;
+          shift = null;
           break;
         }
 
@@ -99,12 +115,14 @@ class TranslationUtilities {
         {
           op_code = null;
           funct = null;
+          shift = null;
         }
     }
 
     return {
       'op': op_code,
       'fn': funct,
+      'st': shift,
     };
   }
 
@@ -151,9 +169,185 @@ class TranslationUtilities {
     return _avalibleRegisters[decimalCode];
   }
 
-  static Instruction? convertStringInstructionToObject(
-      String stringInstruction) {
-    Instruction? instruction;
+  static Instruction decoder(String stringInstruction) {
+    Instruction instruction =
+        Instruction(type: 'r', op_code: '000000', instructionAddress: '0000');
+
+    String temp = stringInstruction;
+    String head = temp.substring(0, temp.indexOf(' '));
+    temp = temp.substring(temp.indexOf(' '), temp.length).trim();
+
+    Map<String, String?> functAndOp = translateToGetFunctAndOpMachineCode(head);
+
+    instruction.type = checkTypeOfInstruction(functAndOp['op']!);
+
+    // print(instruction.type);
+
+    // print('head:$head');
+    // print('temp:$temp');
+
+    instruction.op_code = functAndOp['op']!;
+    //print(instruction.op_code);
+
+    if (instruction.op_code == 'r') {
+      instruction.funct = functAndOp['fn']!;
+      //print(instruction.funct);
+
+      instruction.shift = functAndOp['st']!;
+      //print(instruction.shift);
+    }
+
+    if (instruction.type == 'r') {
+      switch (instruction.funct) {
+        //add
+        case '100000':
+        //div
+        case '011010':
+        //mult
+        case '011000':
+          {
+            //rd
+            String mRd =
+                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
+            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+
+            //rs
+            String mRs =
+                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
+            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+
+            //rt
+            String mRt = temp.substring(temp.indexOf('\$') + 1, temp.length);
+
+            instruction.rd =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRd)), 5);
+            //print(instruction.rd);
+
+            instruction.rs =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRs)), 5);
+            //print(instruction.rs);
+
+            instruction.rt =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRt)), 5);
+            //print(instruction.rt);
+
+            break;
+          }
+        //addi
+        case '001000':
+          {
+            //rd
+            String mRd =
+                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
+            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+
+            //rs
+            String mRs =
+                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
+            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+
+            //print("test:$temp");
+            //value
+            String mValue = decimalToBinary(int.parse(temp));
+
+            instruction.rd =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRd)), 5);
+            //print(instruction.rd);
+
+            instruction.rs =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRs)), 5);
+            //print(instruction.rs);
+
+            instruction.value = mValue;
+            //print(instruction.value);
+
+            break;
+          }
+        default:
+          {
+            print('error');
+          }
+      }
+    } else if (instruction.type == 'j') {
+      switch (instruction.op_code) {
+        case '000010':
+          {
+            instruction.jumpAddress =
+                temp.substring(temp.indexOf(' ') + 1, temp.length);
+            //print(instruction.jumpAddress);
+            break;
+          }
+        default:
+          {
+            print('error');
+          }
+      }
+    } else if (instruction.type == 'i') {
+      switch (instruction.op_code) {
+        //beq
+        case '000100':
+        //bne
+        case '000101':
+          {
+            //rs
+            String mRs =
+                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
+            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+
+            //rs
+            String mRt =
+                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
+            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+
+            //jump
+            String mJumpAddress =
+                temp.substring(temp.indexOf(',') + 1, temp.length);
+
+            instruction.rs =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRs)), 5);
+            //print(instruction.rs);
+
+            instruction.rt =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRt)), 5);
+            //print(instruction.rt);
+
+            instruction.jumpAddress = mJumpAddress;
+            //print(instruction.jumpAddress);
+
+            break;
+          }
+        //bgtz
+        case '000111':
+        //blez
+        case '000110':
+          {
+            //rs
+            String mRs =
+                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
+            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+
+            //jump
+            String mJumpAddress =
+                temp.substring(temp.indexOf(',') + 1, temp.length);
+
+            instruction.rs =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRs)), 5);
+            //print(instruction.rs);
+
+            instruction.jumpAddress = mJumpAddress;
+            //print(instruction.jumpAddress);
+
+            break;
+          }
+        default:
+          {
+            print('error');
+          }
+      }
+    } else {
+      //error
+    }
+
     return instruction;
   }
 }

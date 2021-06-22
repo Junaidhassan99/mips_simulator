@@ -2,6 +2,10 @@ class Instruction {
   //6-bit
   String op_code;
   String type;
+  //Depends on memory size
+  String instructionAddress;
+  //In binary form
+  String? value;
   //5-bit
   String? rs;
   //5-bit
@@ -18,11 +22,13 @@ class Instruction {
   Instruction({
     required this.type,
     required this.op_code,
+    required this.instructionAddress,
     this.funct,
     this.jumpAddress,
     this.rd,
     this.rs,
     this.rt,
     this.shift,
+    this.value,
   });
 }

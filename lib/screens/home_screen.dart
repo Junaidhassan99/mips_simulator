@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mips_simulator/models/instruction.dart';
 import 'package:mips_simulator/utilities/translation_utilties.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,27 +16,60 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     //testing
-    Map<String, String?> result =
-        TranslationUtilities.translateToGetFunctAndOpMachineCode('add');
 
-    //print("${result['op']} ; ${result['fn']}");
-
-    //print(TranslationUtilities.binaryToDecimal('11011110'));
-
-    //print(x.length);
-    //x.forEach((element) => print(element));
-
-    //print(TranslationUtilities.getRegisterName(13));
-    //print(TranslationUtilities.getRegisterSerial('t2'));
-
-    String exampleInstructionR = 'add \$t1, \$s3, \$s3';
-    String exampleInstructionI = 'bne \$t0, \$s5, Exit';
+    String exampleInstructionR = 'addi \$t1, \$s3, 16';
+    String exampleInstructionI1 = 'bne \$t0, \$s5, Exit';
+    String exampleInstructionI2 = 'bgtz \$t9, Exit';
     String exampleInstructionJ = 'j Loop';
+
+    Instruction instruction =
+        TranslationUtilities.decoder(exampleInstructionI2);
+
+    print(instruction.funct);
+    print(instruction.instructionAddress);
+    print(instruction.jumpAddress);
+    print(instruction.op_code);
+    print(instruction.rd);
+    print(instruction.rs);
+    print(instruction.rt);
+    print(instruction.shift);
+    print(instruction.type);
+    print(instruction.value);
+
     //print(exampleInstructionR);
     //
     return Scaffold(
-      body: Center(
-        child: Text('working'),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.blue,
+              Colors.red,
+            ],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      height: 500,
+                      width: MediaQuery.of(context).size.width * 0.45,
+                      child: Card(),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
