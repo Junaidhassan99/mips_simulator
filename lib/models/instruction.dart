@@ -5,7 +5,7 @@ class Instruction {
   //Depends on memory size
   String instructionAddress;
   //In binary form
-  String? value;
+  //String? value;
   //5-bit
   String? rs;
   //5-bit
@@ -17,18 +17,25 @@ class Instruction {
   //6-bit
   String? funct;
   //unknown-bit
-  String? jumpAddress;
+  String? target;
 
   Instruction({
     required this.type,
     required this.op_code,
     required this.instructionAddress,
     this.funct,
-    this.jumpAddress,
+    this.target,
     this.rd,
     this.rs,
     this.rt,
     this.shift,
-    this.value,
+    //this.value,
   });
+}
+
+class Branch {
+  String instructionAddress;
+  String branchName;
+
+  Branch(this.instructionAddress, this.branchName);
 }

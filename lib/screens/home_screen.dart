@@ -15,6 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<int> x = List.filled(31, 0);
 
   List<Instruction> instructionList = [];
+  List<Branch> branchList = [];
 
   TextEditingController _textEditorController = TextEditingController();
 
@@ -76,46 +77,48 @@ class _HomeScreenState extends State<HomeScreen> {
     String currentHexAddress = '00400000';
 
     String testText =
-        "addi \$t1, \$s3, 16\nbne \$t0, \$s5, Exit\nbgtz \$t9, Exit\nj Loop";
+        "addi \$t1, \$s3, 16\nLoop:\nbne \$t0, \$s5, Exit\nExit:\nbgtz \$t9, Exit\nj Loop";
+    //String testText = "addi \$t1, \$s3, 16";
 
     instructionList = [];
+    branchList = [];
     setState(() {
       testText.split('\n').forEach((line) {
         line = line.trim();
-        if (line.isNotEmpty) {
+
+        if (line.contains(':')) {
+          branchList.add(
+            Branch(currentHexAddress, line.replaceAll(':', '')),
+          );
+        } else if (line.isNotEmpty) {
           Instruction instruction = TranslationUtilities.decoder(line);
 
           instruction.instructionAddress = currentHexAddress;
 
           instructionList.add(instruction);
+        } else {
+          //error
         }
 
         currentHexAddress =
             TranslationUtilities.incrementHexAddress(currentHexAddress);
-        print('test $currentHexAddress');
       });
+
+      // branchList.forEach((element) {
+      //   print(element.branchName + 'x');
+      // });
+
+      // instructionList.forEach((instruction) {
+      //   if (instruction.target != null &&
+      //       branchList.contains(instruction.target)) {
+      //     instruction.target = branchList
+      //         .firstWhere(
+      //             (element) => element.branchName == instruction.target)
+      //         .instructionAddress;
+      //   }
+      // });
     });
 
-    // String exampleInstructionR = 'addi \$t1, \$s3, 16';
-    // String exampleInstructionI1 = 'bne \$t0, \$s5, Exit';
-    // String exampleInstructionI2 = 'bgtz \$t9, Exit';
-    // String exampleInstructionJ = 'j Loop';
-
-    // Instruction instruction =
-    //     TranslationUtilities.decoder('add \$t1, \$s3, \$s3');
-
-    // print(instruction.funct);
-    // print(instruction.instructionAddress);
-    // print(instruction.jumpAddress);
-    // print(instruction.op_code);
-    // print(instruction.rd);
-    // print(instruction.rs);
-    // print(instruction.rt);
-    // print(instruction.shift);
-    // print(instruction.type);
-    // print(instruction.value);
-
-    //print(exampleInstructionR);
     //
     return Scaffold(
       body: Container(

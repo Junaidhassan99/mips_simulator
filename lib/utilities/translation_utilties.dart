@@ -17,9 +17,9 @@ class TranslationUtilities {
     if (instruction.type == 'r') {
       return "${instruction.op_code} ${instruction.rs} ${instruction.rt} ${instruction.rd} ${instruction.shift} ${instruction.funct}";
     } else if (instruction.type == 'j') {
-      return "${instruction.op_code} ${instruction.jumpAddress}";
+      return "${instruction.op_code} ${instruction.target}";
     } else {
-      return "${instruction.op_code} ${instruction.rs} ${instruction.rt} ${instruction.jumpAddress}";
+      return "${instruction.op_code} ${instruction.rs} ${instruction.rt} ${instruction.target}";
     }
   }
 
@@ -67,13 +67,7 @@ class TranslationUtilities {
           shift = '000000';
           break;
         }
-      case 'addi':
-        {
-          op_code = '000000';
-          funct = '001000';
-          shift = '000000';
-          break;
-        }
+
       case 'div':
         {
           op_code = '000000';
@@ -90,6 +84,13 @@ class TranslationUtilities {
         }
 
       //I-Type
+      case 'addi':
+        {
+          op_code = '001000';
+          funct = null;
+          shift = null;
+          break;
+        }
 
       case 'beq':
         {
@@ -208,14 +209,11 @@ class TranslationUtilities {
     // print('temp:$temp');
 
     instruction.op_code = functAndOp['op']!;
-    print(instruction.op_code);
 
     if (instruction.type == 'r') {
       instruction.funct = functAndOp['fn']!;
-      print(instruction.funct);
 
       instruction.shift = functAndOp['st']!;
-      print(instruction.shift);
     }
 
     if (instruction.type == 'r') {
@@ -254,36 +252,7 @@ class TranslationUtilities {
 
             break;
           }
-        //addi
-        case '001000':
-          {
-            //rd
-            String mRs =
-                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
-            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
 
-            //rs
-            String mRt =
-                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
-            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
-
-            //print("test:$temp");
-            //value
-            String mValue = decimalToBinary(int.parse(temp));
-
-            instruction.rs =
-                fillBinaryString(decimalToBinary(getRegisterSerial(mRs)), 5);
-            //print(instruction.rd);
-
-            instruction.rt =
-                fillBinaryString(decimalToBinary(getRegisterSerial(mRt)), 5);
-            //print(instruction.rt);
-
-            instruction.value = mValue;
-            //print(instruction.value);
-
-            break;
-          }
         default:
           {
             print('error 1');
@@ -293,7 +262,7 @@ class TranslationUtilities {
       switch (instruction.op_code) {
         case '000010':
           {
-            instruction.jumpAddress =
+            instruction.target =
                 temp.substring(temp.indexOf(' ') + 1, temp.length);
             //print(instruction.jumpAddress);
             break;
@@ -332,7 +301,7 @@ class TranslationUtilities {
                 fillBinaryString(decimalToBinary(getRegisterSerial(mRt)), 5);
             //print(instruction.rt);
 
-            instruction.jumpAddress = mJumpAddress;
+            instruction.target = mJumpAddress;
             //print(instruction.jumpAddress);
 
             break;
@@ -353,10 +322,41 @@ class TranslationUtilities {
 
             instruction.rs =
                 fillBinaryString(decimalToBinary(getRegisterSerial(mRs)), 5);
+
+            instruction.rt = "00000";
             //print(instruction.rs);
 
-            instruction.jumpAddress = mJumpAddress;
+            instruction.target = mJumpAddress;
             //print(instruction.jumpAddress);
+
+            break;
+          }
+        //addi
+        case '001000':
+          {
+            //rd
+            String mRs =
+                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
+            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+
+            //rs
+            String mRt =
+                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
+            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+
+            //value
+            String mValue = decimalToBinary(int.parse(temp));
+
+            instruction.rs =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRs)), 5);
+            print(instruction.rs);
+
+            instruction.rt =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRt)), 5);
+            print(instruction.rt);
+
+            instruction.target = fillBinaryString(mValue, 16);
+            //print(instruction.value);
 
             break;
           }
