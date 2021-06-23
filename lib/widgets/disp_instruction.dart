@@ -30,7 +30,7 @@ class DispInstruction extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                      "Instruction Address: ${_nullhandler(instruction.instructionAddress)}"),
+                      "Instruction Address: 0x${_nullhandler(instruction.instructionAddress)}"),
                   Text("OP-Code: ${_nullhandler(instruction.op_code)}"),
                   Text("Shift: ${_nullhandler(instruction.shift)}"),
                   Text("Funct: ${_nullhandler(instruction.funct)}"),

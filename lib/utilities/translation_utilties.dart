@@ -17,9 +17,9 @@ class TranslationUtilities {
     if (instruction.type == 'r') {
       return "${instruction.op_code} ${instruction.rs} ${instruction.rt} ${instruction.rd} ${instruction.shift} ${instruction.funct}";
     } else if (instruction.type == 'j') {
-      return "${instruction.op_code} ${instruction.target}";
+      return "${instruction.op_code} (${instruction.target})";
     } else {
-      return "${instruction.op_code} ${instruction.rs} ${instruction.rt} ${instruction.target}";
+      return "${instruction.op_code} ${instruction.rs} ${instruction.rt} (${instruction.target})";
     }
   }
 
