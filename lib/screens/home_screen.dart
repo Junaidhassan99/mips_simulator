@@ -54,6 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     instructionList = [];
     branchList = [];
+    x = List.filled(31, 0);
+
     setState(() {
       _textEditorController.text.split('\n').forEach((line) {
         line = line.trim();
@@ -79,8 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
             TranslationUtilities.incrementHexAddress(currentHexAddress);
       });
 
-      // branchList.forEach((element) {
-      //   print(element.branchName + 'x');
+      // x.forEach((element) {
+      //   print(element);
       // });
 
       // instructionList.forEach((instruction) {

@@ -108,6 +108,8 @@ class TranslationUtilities {
         case '001000':
           {
             result = (a + binaryToDecimal(instruction.target!)).toString();
+            mX[binaryToDecimal(instruction.rs!)] = int.parse(result);
+
             break;
           }
         default:
