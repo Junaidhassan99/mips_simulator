@@ -81,19 +81,19 @@ class _HomeScreenState extends State<HomeScreen> {
             TranslationUtilities.incrementHexAddress(currentHexAddress);
       });
 
-      // x.forEach((element) {
-      //   print(element);
-      // });
-
-      // instructionList.forEach((instruction) {
-      //   if (instruction.target != null &&
-      //       branchList.contains(instruction.target)) {
-      //     instruction.target = branchList
-      //         .firstWhere(
-      //             (element) => element.branchName == instruction.target)
-      //         .instructionAddress;
-      //   }
-      // });
+      instructionList.forEach((instruction) {
+        if (instruction.target != null) {
+          if (branchList
+              .map((e) => e.branchName)
+              .contains(instruction.target)) {
+            instruction.target = '0x' +
+                branchList
+                    .firstWhere(
+                        (element) => element.branchName == instruction.target)
+                    .instructionAddress;
+          }
+        }
+      });
     });
   }
 
