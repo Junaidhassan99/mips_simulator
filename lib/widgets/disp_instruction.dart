@@ -18,9 +18,9 @@ class DispInstruction extends StatelessWidget {
         children: [
           Text(
             'Machine Code: ${TranslationUtilities.decodeAccordingToType(instruction)}',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          SizedBox(
+          const SizedBox(
             height: 3,
           ),
           Row(
@@ -48,13 +48,13 @@ class DispInstruction extends StatelessWidget {
                 children: [
                   Text(
                     'Result: ${_nullhandler(instruction.result)}',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ],
           ),
-          Divider(),
+          const Divider(),
         ],
       ),
     );

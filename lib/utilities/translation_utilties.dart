@@ -133,6 +133,7 @@ class TranslationUtilities {
   }
 
   static String incrementHexAddress(String previousHexCode) {
+    //print(previousHexCode);
     //convert hex to int
     int dec = int.parse(previousHexCode, radix: 16);
     //increment by 4

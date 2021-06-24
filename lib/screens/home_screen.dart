@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   //Create an integer list of length 31 will be used as registers
   List<int> x = List.filled(31, 0);
+  int _lineNumberUnderExecutuion = 0;
 
   List<Instruction> instructionList = [];
   List<Branch> branchList = [];
@@ -26,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         title,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -50,6 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _runSimulation() {
+    _lineNumberUnderExecutuion = 0;
+
     String currentHexAddress = '00400000';
 
     instructionList = [];
@@ -58,6 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       _textEditorController.text.split('\n').forEach((line) {
+        _lineNumberUnderExecutuion++;
+
         line = line.trim();
 
         if (line.contains(':')) {
@@ -97,20 +102,44 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> _showErrorDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error Occured!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                const Text('A syntaxt error has occured in the code'),
+                Text('At line number: $_lineNumberUnderExecutuion'),
+                const Text('Make sure to check spacing and syntaxt'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     //testing
 
-    // String testText =
-    //     "addi \$t1, \$s3, 16\nLoop:\nbne \$t0, \$s5, Exit\nExit:\nbgtz \$t9, Exit\nj Loop";
-    //String testText = "addi \$t1, \$s3, 16";
-
-    //
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -122,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Column(
               children: [
                 Row(
@@ -150,8 +179,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                              onPressed: _runSimulation,
-                              icon: Icon(
+                              onPressed: () async {
+                                try {
+                                  _runSimulation();
+                                } catch (error) {
+                                  await _showErrorDialog();
+                                }
+                              },
+                              icon: const Icon(
                                 Icons.play_arrow,
                                 color: Colors.green,
                                 size: 35,
@@ -195,13 +230,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        '$index',
+                                        '\$$index',
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        '\$${TranslationUtilities.getRegisterName(index)}',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                      const SizedBox(
                                         height: 15,
                                       ),
                                       Text(
