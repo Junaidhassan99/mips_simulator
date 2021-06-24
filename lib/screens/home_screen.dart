@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Branch> branchList = [];
 
   TextEditingController _textEditorController = TextEditingController();
+  FocusNode _textEditorFocusNode = FocusNode();
 
   //String testText='';
 
@@ -135,137 +136,143 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     //testing
 
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.blue,
-              Colors.red,
-            ],
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.blue,
+                Colors.red,
+              ],
+            ),
           ),
-        ),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    //Input Editor
-                    _editAndOutputParentWidget(
-                      'Text Editor',
-                      TextField(
-                        controller: _textEditorController,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                    //System Tray
-                    Container(
-                      height: 500,
-                      width: MediaQuery.of(context).size.width * 0.05,
-                      child: Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () async {
-                                try {
-                                  _runSimulation();
-                                } catch (error) {
-                                  await _showErrorDialog();
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.play_arrow,
-                                color: Colors.green,
-                                size: 35,
-                              ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      //Input Editor
+                      GestureDetector(
+                        onTap: () => _textEditorFocusNode.requestFocus(),
+                        child: _editAndOutputParentWidget(
+                          'Text Editor',
+                          TextField(
+                            focusNode: _textEditorFocusNode,
+                            controller: _textEditorController,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    //Output Screen
-                    _editAndOutputParentWidget(
-                      'Output',
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: instructionList.length,
-                          itemBuilder: (_, index) => DispInstruction(
-                            instructionList[index],
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                //Register Bar
-                Container(
-                  height: 200,
-                  width: double.infinity,
-                  child: Card(
-                    //color: Colors.red,
-                    child: Column(
-                      children: [
-                        _titleText('Register Data'),
-                        Expanded(
-                          //height: 150,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: x.length,
-                              itemBuilder: (_, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        '\$$index',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        '\$${TranslationUtilities.getRegisterName(index)}',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 15,
-                                      ),
-                                      Text(
-                                        '${x[index]}',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }),
+                      //System Tray
+                      Container(
+                        height: 500,
+                        width: MediaQuery.of(context).size.width * 0.05,
+                        child: Card(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                onPressed: () async {
+                                  try {
+                                    _runSimulation();
+                                  } catch (error) {
+                                    await _showErrorDialog();
+                                  }
+                                },
+                                icon: const Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.green,
+                                  size: 35,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
+                      ),
+                      //Output Screen
+                      _editAndOutputParentWidget(
+                        'Output',
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: instructionList.length,
+                            itemBuilder: (_, index) => DispInstruction(
+                              instructionList[index],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  //Register Bar
+                  Container(
+                    height: 200,
+                    width: double.infinity,
+                    child: Card(
+                      //color: Colors.red,
+                      child: Column(
+                        children: [
+                          _titleText('Register Data'),
+                          Expanded(
+                            //height: 150,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: x.length,
+                                itemBuilder: (_, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '\$$index',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          '\$${TranslationUtilities.getRegisterName(index)}',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Text(
+                                          '${x[index]}',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
