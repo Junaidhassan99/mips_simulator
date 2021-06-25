@@ -22,13 +22,26 @@ class TranslationUtilities {
     if (instruction.type == 'r') {
       return "${instruction.op_code} ${instruction.rs} ${instruction.rt} ${instruction.rd} ${instruction.shift} ${instruction.funct}";
     } else if (instruction.type == 'j') {
+      //Convert Hex Target to Binary
+      //Drop first 4 bits
+      //Drop last 2 bits
+      targetIfAny = fillBinaryString(hexToBinary(instruction.target!), 32)
+          .substring(4, 30);
+
+      //For testing
+      // print(targetIfAny);
+      // print(targetIfAny.length);
+
       return "${instruction.op_code} $targetIfAny";
     } else {
       return "${instruction.op_code} ${instruction.rs} ${instruction.rt} $targetIfAny";
     }
   }
 
-  static String executeAccordingToType(List<int> mX, Instruction instruction) {
+  static Map<String, dynamic> execute(List<int> mX, Instruction instruction) {
+    bool mIsJumpAllowed = false;
+    String resultString;
+
     if (instruction.type == 'r') {
       int a = mX[binaryToDecimal(instruction.rs!)];
       int b = mX[binaryToDecimal(instruction.rt!)];
@@ -62,13 +75,14 @@ class TranslationUtilities {
       }
 
       mX[binaryToDecimal(instruction.rd!)] = result;
-      return result.toString();
+      resultString = result.toString();
     } else if (instruction.type == 'j') {
       String result = '';
       switch (instruction.op_code) {
         case '000010':
           {
             result = 'Jump to ${instruction.target}';
+            mIsJumpAllowed = true;
             break;
           }
         default:
@@ -77,7 +91,7 @@ class TranslationUtilities {
           }
       }
 
-      return result;
+      resultString = result;
     } else {
       int a = mX[binaryToDecimal(instruction.rs!)];
       int b = mX[binaryToDecimal(instruction.rt!)];
@@ -88,25 +102,33 @@ class TranslationUtilities {
         //beq
         case '000100':
           {
-            result = (a == b).toString();
+            bool resultCompare = (a == b);
+            result = resultCompare.toString();
+            mIsJumpAllowed = resultCompare;
             break;
           }
         //bne
         case '000101':
           {
-            result = (a != b).toString();
+            bool resultCompare = (a != b);
+            result = resultCompare.toString();
+            mIsJumpAllowed = resultCompare;
             break;
           }
         //bgtz
         case '000111':
           {
-            result = (a > 0).toString();
+            bool resultCompare = (a > 0);
+            result = resultCompare.toString();
+            mIsJumpAllowed = resultCompare;
             break;
           }
         //blez
         case '000110':
           {
-            result = (a <= 0).toString();
+            bool resultCompare = (a <= 0);
+            result = resultCompare.toString();
+            mIsJumpAllowed = resultCompare;
             break;
           }
         //addi
@@ -122,9 +144,9 @@ class TranslationUtilities {
             print('error');
           }
       }
-
-      return result;
+      resultString = result;
     }
+    return {'res': resultString, 'ija': mIsJumpAllowed};
   }
 
   //number is always in int
@@ -135,6 +157,12 @@ class TranslationUtilities {
   //binary is always in string
   static int binaryToDecimal(String binary) {
     return int.parse(binary, radix: 2);
+  }
+
+  static String hexToBinary(String hexCode) {
+    int decimalForm = int.parse(hexCode, radix: 16);
+    String binaryForm = decimalToBinary(decimalForm);
+    return binaryForm;
   }
 
   static String incrementHexAddress(String previousHexCode) {

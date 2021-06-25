@@ -5,6 +5,7 @@ class Instruction {
   //Depends on memory size
   String instructionAddress;
   bool isTargetAValue;
+  bool isJumpAllowed;
   //5-bit
   String? rs;
   //5-bit
@@ -23,7 +24,8 @@ class Instruction {
     required this.type,
     required this.op_code,
     required this.instructionAddress,
-    this.isTargetAValue=false,
+    this.isJumpAllowed = false,
+    this.isTargetAValue = false,
     this.result,
     this.funct,
     this.target,

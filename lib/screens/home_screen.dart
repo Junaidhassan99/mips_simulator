@@ -76,7 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
           instruction.instructionAddress = currentHexAddress;
 
           instruction.result =
-              TranslationUtilities.executeAccordingToType(x, instruction);
+              TranslationUtilities.execute(x, instruction)['res'];
+          instruction.isJumpAllowed =
+              TranslationUtilities.execute(x, instruction)['ija'];
 
           instructionList.add(instruction);
         } else {
@@ -87,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
             TranslationUtilities.incrementHexAddress(currentHexAddress);
       });
 
+      //Target name is being translated to Target address (if exists)
       instructionList.forEach((instruction) {
         if (instruction.target != null) {
           if (branchList
