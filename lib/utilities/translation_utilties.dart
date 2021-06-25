@@ -13,6 +13,19 @@ class TranslationUtilities {
     }
   }
 
+  static List<String> getHexAddressesOfLength(int n) {
+    List<String> resultList = [];
+    String currentHexAddress = '00400000';
+    resultList.add(currentHexAddress);
+
+    for (int i = 0; i < n; i++) {
+      currentHexAddress = incrementHexAddress(currentHexAddress);
+      resultList.add(currentHexAddress);
+    }
+
+    return resultList;
+  }
+
   static String decodeAccordingToType(Instruction instruction) {
     String? targetIfAny = '${instruction.target}';
     if (instruction.target != null && !instruction.isTargetAValue) {

@@ -54,55 +54,71 @@ class _HomeScreenState extends State<HomeScreen> {
   void _runSimulation() {
     _lineNumberUnderExecutuion = 0;
 
-    String currentHexAddress = '00400000';
+    List<String> inputStringList = _textEditorController.text.split('\n');
+    List<String> addressList =
+        TranslationUtilities.getHexAddressesOfLength(inputStringList.length);
 
     instructionList = [];
     branchList = [];
     x = List.filled(31, 0);
 
-    setState(() {
-      _textEditorController.text.split('\n').forEach((line) {
-        _lineNumberUnderExecutuion++;
+    setState(
+      () {
+        for (int i = 0; i < inputStringList.length; i++) {
+          String line = inputStringList[i];
+          line = line.trim();
 
-        line = line.trim();
-
-        if (line.contains(':')) {
-          branchList.add(
-            Branch(currentHexAddress, line.replaceAll(':', '')),
-          );
-        } else if (line.isNotEmpty) {
-          Instruction instruction = TranslationUtilities.decoder(line);
-
-          instruction.instructionAddress = currentHexAddress;
-
-          instruction.result =
-              TranslationUtilities.execute(x, instruction)['res'];
-          instruction.isJumpAllowed =
-              TranslationUtilities.execute(x, instruction)['ija'];
-
-          instructionList.add(instruction);
-        } else {
-          //error
-        }
-
-        currentHexAddress =
-            TranslationUtilities.incrementHexAddress(currentHexAddress);
-      });
-
-      //Target name is being translated to Target address (if exists)
-      instructionList.forEach((instruction) {
-        if (instruction.target != null) {
-          if (branchList
-              .map((e) => e.branchName)
-              .contains(instruction.target)) {
-            instruction.target = branchList
-                .firstWhere(
-                    (element) => element.branchName == instruction.target)
-                .instructionAddress;
+          if (line.contains(':')) {
+            branchList.add(
+              Branch(addressList[i], line.replaceAll(':', '')),
+            );
           }
         }
-      });
-    });
+
+        for (int i = 0; i < inputStringList.length; i++) {
+          _lineNumberUnderExecutuion++;
+
+          String line = inputStringList[i];
+          line = line.trim();
+
+          if (line.isNotEmpty && !line.contains(':')) {
+            Instruction instruction = TranslationUtilities.decoder(line);
+
+            instruction.instructionAddress = addressList[i];
+
+            Map<String, dynamic> executionResult =
+                TranslationUtilities.execute(x, instruction);
+
+            instruction.result = executionResult['res'];
+            instruction.isJumpAllowed = executionResult['ija'];
+
+            instructionList.add(instruction);
+
+            //Target name is being translated to Target address (if exists)
+            if (instruction.target != null) {
+              if (branchList
+                  .map((e) => e.branchName)
+                  .contains(instruction.target)) {
+                instruction.target = branchList
+                    .firstWhere(
+                        (element) => element.branchName == instruction.target)
+                    .instructionAddress;
+              }
+            }
+
+            if (instruction.target != null &&
+                !instruction.isTargetAValue &&
+                instruction.isJumpAllowed) {
+              int jumpToIndex = addressList.indexOf(instruction.target!);
+              i = jumpToIndex;
+              continue;
+            }
+          } else {
+            print('Non-Executable line');
+          }
+        }
+      },
+    );
   }
 
   Future<void> _showErrorDialog() async {
