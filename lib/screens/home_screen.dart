@@ -329,44 +329,45 @@ class _HomeScreenState extends State<HomeScreen> {
                           Expanded(
                             //height: 150,
                             child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: x.length,
-                                itemBuilder: (_, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '\$$index',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: x.length,
+                              itemBuilder: (_, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        '\$$index',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                        const SizedBox(
-                                          height: 5,
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        '\$${TranslationUtilities.getRegisterName(index)}',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red,
                                         ),
-                                        Text(
-                                          '\$${TranslationUtilities.getRegisterName(index)}',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.red,
-                                          ),
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        '${x[index]}',
+                                        style: TextStyle(
+                                          fontSize: 18,
                                         ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        Text(
-                                          '${x[index]}',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),
