@@ -14,12 +14,17 @@ class TranslationUtilities {
   }
 
   static String decodeAccordingToType(Instruction instruction) {
+    String? targetIfAny = '${instruction.target}';
+    if (instruction.target != null && !instruction.isTargetAValue) {
+      targetIfAny = '(0x$targetIfAny)';
+    }
+
     if (instruction.type == 'r') {
       return "${instruction.op_code} ${instruction.rs} ${instruction.rt} ${instruction.rd} ${instruction.shift} ${instruction.funct}";
     } else if (instruction.type == 'j') {
-      return "${instruction.op_code} (${instruction.target})";
+      return "${instruction.op_code} $targetIfAny";
     } else {
-      return "${instruction.op_code} ${instruction.rs} ${instruction.rt} (${instruction.target})";
+      return "${instruction.op_code} ${instruction.rs} ${instruction.rt} $targetIfAny";
     }
   }
 
@@ -456,6 +461,8 @@ class TranslationUtilities {
             print(instruction.rt);
 
             instruction.target = fillBinaryString(mValue, 16);
+
+            instruction.isTargetAValue = true;
             //print(instruction.value);
 
             break;

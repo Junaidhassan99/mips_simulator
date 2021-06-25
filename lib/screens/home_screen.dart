@@ -92,11 +92,10 @@ class _HomeScreenState extends State<HomeScreen> {
           if (branchList
               .map((e) => e.branchName)
               .contains(instruction.target)) {
-            instruction.target = '0x' +
-                branchList
-                    .firstWhere(
-                        (element) => element.branchName == instruction.target)
-                    .instructionAddress;
+            instruction.target = branchList
+                .firstWhere(
+                    (element) => element.branchName == instruction.target)
+                .instructionAddress;
           }
         }
       });
@@ -164,13 +163,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         onTap: () => _textEditorFocusNode.requestFocus(),
                         child: _editAndOutputParentWidget(
                           'Text Editor',
-                          TextField(
-                            focusNode: _textEditorFocusNode,
-                            controller: _textEditorController,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: TextField(
+                                focusNode: _textEditorFocusNode,
+                                controller: _textEditorController,
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                              ),
                             ),
                           ),
                         ),

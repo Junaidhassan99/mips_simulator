@@ -4,8 +4,7 @@ class Instruction {
   String type;
   //Depends on memory size
   String instructionAddress;
-  //In binary form
-  //String? value;
+  bool isTargetAValue;
   //5-bit
   String? rs;
   //5-bit
@@ -24,6 +23,7 @@ class Instruction {
     required this.type,
     required this.op_code,
     required this.instructionAddress,
+    this.isTargetAValue=false,
     this.result,
     this.funct,
     this.target,
