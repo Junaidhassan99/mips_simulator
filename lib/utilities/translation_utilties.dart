@@ -374,12 +374,12 @@ class TranslationUtilities {
             //rd
             String mRd =
                 temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
-            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+            temp = temp.substring(temp.indexOf(',') + 1, temp.length).trim();
 
             //rs
             String mRs =
                 temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
-            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+            temp = temp.substring(temp.indexOf(',') + 1, temp.length).trim();
 
             //rt
             String mRt = temp.substring(temp.indexOf('\$') + 1, temp.length);
@@ -428,12 +428,12 @@ class TranslationUtilities {
             //rs
             String mRs =
                 temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
-            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+            temp = temp.substring(temp.indexOf(',') + 1, temp.length).trim();
 
             //rs
             String mRt =
                 temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
-            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+            temp = temp.substring(temp.indexOf(',') + 1, temp.length).trim();
 
             //jump
             String mJumpAddress =
@@ -460,7 +460,7 @@ class TranslationUtilities {
             //rs
             String mRs =
                 temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
-            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+            temp = temp.substring(temp.indexOf(',') + 1, temp.length).trim();
 
             //jump
             String mJumpAddress =
@@ -483,12 +483,12 @@ class TranslationUtilities {
             //rd
             String mRs =
                 temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
-            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+            temp = temp.substring(temp.indexOf(',') + 1, temp.length).trim();
 
             //rs
             String mRt =
                 temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
-            temp = temp.substring(temp.indexOf(',') + 2, temp.length).trim();
+            temp = temp.substring(temp.indexOf(',') + 1, temp.length).trim();
 
             //value
             String mValue = decimalToBinary(int.parse(temp));

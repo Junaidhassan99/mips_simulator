@@ -108,7 +108,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
             if (instruction.target != null &&
                 !instruction.isTargetAValue &&
-                instruction.isJumpAllowed) {
+                instruction.isJumpAllowed &&
+                branchList
+                    .map((e) => e.instructionAddress)
+                    .contains(instruction.target)) {
               int jumpToIndex = addressList.indexOf(instruction.target!);
               i = jumpToIndex;
               continue;
