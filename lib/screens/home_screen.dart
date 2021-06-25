@@ -124,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _showErrorDialog() async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // user must tap button!
+      barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Error Occured!'),
@@ -139,7 +139,76 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text('Dismiss'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _getISAInfoRow(
+      String instruction, String opCodeOrFunctCode, String instructionType,
+      [bool isTitle = false]) {
+    final TextStyle titleTextStyle =
+        TextStyle(fontWeight: isTitle ? FontWeight.bold : null);
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              instruction.padLeft(4, ' '),
+              style: titleTextStyle,
+            ),
+            Text(
+              opCodeOrFunctCode,
+              style: titleTextStyle,
+            ),
+            Text(
+              instructionType,
+              style: titleTextStyle,
+            ),
+          ],
+        ),
+        Divider(),
+      ],
+    );
+  }
+
+  Future<void> _infoDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(child: const Text('Avalible ISA')),
+          content: SingleChildScrollView(
+            child: Container(
+              width: 500,
+              child: ListBody(
+                children: <Widget>[
+                  _getISAInfoRow(
+                      'Instruction', 'OP/Funct', 'Instruction Type', true),
+                  _getISAInfoRow('beq', '000100', 'I'),
+                  _getISAInfoRow('bne', '000101', 'I'),
+                  _getISAInfoRow('bgtz', '000111', 'I'),
+                  _getISAInfoRow('blez', '000110', 'I'),
+                  _getISAInfoRow('addi', '001000', 'I'),
+                  _getISAInfoRow('j', '000010', 'J'),
+                  _getISAInfoRow('add', '100000', 'R'),
+                  _getISAInfoRow('sub', '100010', 'R'),
+                  _getISAInfoRow('mult', '011000', 'R'),
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Dismiss'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -203,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: MediaQuery.of(context).size.width * 0.05,
                         child: Card(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               IconButton(
@@ -215,8 +284,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                   }
                                 },
                                 icon: const Icon(
-                                  Icons.play_arrow,
+                                  Icons.play_circle_outlined,
                                   color: Colors.green,
+                                  size: 35,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () async {
+                                  await _infoDialog();
+                                },
+                                icon: const Icon(
+                                  Icons.info,
+                                  color: Colors.grey,
                                   size: 35,
                                 ),
                               ),
