@@ -28,51 +28,56 @@ class DispInstruction extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Column(
         children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Column(
-              children: [
-                Text(
-                  'Machine Code: ${TranslationUtilities.decodeAccordingToType(instruction, numberOfLines)}',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 3,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            "Instruction Address: 0x${_nullHandler(instruction.instructionAddress)}"),
-                        Text("OP-Code: ${_nullHandler(instruction.op_code)}"),
-                        Text("Shift: ${_nullHandler(instruction.shift)}"),
-                        Text("Funct: ${_nullHandler(instruction.funct)}"),
-                        Text(
-                            "Instruction Type: ${_nullHandler(instruction.type.toUpperCase())}"),
-                        Text("RS: ${_nullHandler(instruction.rs)}"),
-                        Text("RT: ${_nullHandler(instruction.rt)}"),
-                        Text("RD: ${_nullHandler(instruction.rd)}"),
-                        //Text("Value: ${_nullhandler(instruction.value)}"),
-                        Text(
-                            "Target / Immediate Address: ${_nullHandlerForTarget(instruction.target, instruction.isTargetAValue)}"),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Result: ${_nullHandler(instruction.result)}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+          Scrollbar(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Column(
+                children: [
+                  Text(
+                    'Machine Code: ${TranslationUtilities.decodeAccordingToType(instruction, numberOfLines)}',
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 3,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              "Instruction Address: 0x${_nullHandler(instruction.instructionAddress)}"),
+                          Text("OP-Code: ${_nullHandler(instruction.op_code)}"),
+                          Text("Shift: ${_nullHandler(instruction.shift)}"),
+                          Text("Funct: ${_nullHandler(instruction.funct)}"),
+                          Text(
+                              "Instruction Type: ${_nullHandler(instruction.type.toUpperCase())}"),
+                          Text("RS: ${_nullHandler(instruction.rs)}"),
+                          Text("RT: ${_nullHandler(instruction.rt)}"),
+                          Text("RD: ${_nullHandler(instruction.rd)}"),
+                          //Text("Value: ${_nullhandler(instruction.value)}"),
+                          Text(
+                              "Target / Immediate Address: ${_nullHandlerForTarget(instruction.target, instruction.isTargetAValue)}"),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Result: ${_nullHandler(instruction.result)}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                ],
+              ),
             ),
           ),
           const Divider(),

@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   //Create an integer list of length 31 will be used as registers
   List<int> x = List.filled(31, 0);
-  int _lineNumberUnderExecutuion = 0;
+  int _lineNumberUnderExecutuion = 1;
   int _numberOfLines = 0;
   bool _stopExecution = false;
 
@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _runSimulation() {
-    _lineNumberUnderExecutuion = 0;
+    _lineNumberUnderExecutuion = 1;
     _numberOfLines = 0;
 
     List<String> inputStringList = _textEditorController.text.split('\n');
@@ -84,8 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         for (int i = 0; i < inputStringList.length; i++) {
-          _lineNumberUnderExecutuion++;
-
           String line = inputStringList[i];
           line = line.trim();
 
@@ -127,6 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
           } else {
             print('Non-Executable line');
           }
+
+          _lineNumberUnderExecutuion++;
         }
       },
     );
@@ -249,163 +249,167 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  Flex(
-                    direction: isSmallScreen ? Axis.vertical : Axis.horizontal,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      //Input Editor
-                      GestureDetector(
-                        onTap: () => _textEditorFocusNode.requestFocus(),
-                        child: _editAndOutputParentWidget(
-                          'Text Editor',
-                          Expanded(
-                            child: SingleChildScrollView(
-                              child: TextField(
-                                focusNode: _textEditorFocusNode,
-                                controller: _textEditorController,
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
+          child: Scrollbar(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    Flex(
+                      direction:
+                          isSmallScreen ? Axis.vertical : Axis.horizontal,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        //Input Editor
+                        GestureDetector(
+                          onTap: () => _textEditorFocusNode.requestFocus(),
+                          child: _editAndOutputParentWidget(
+                            'Text Editor',
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: TextField(
+                                  focusNode: _textEditorFocusNode,
+                                  controller: _textEditorController,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
                                 ),
+                              ),
+                            ),
+                            isSmallScreen,
+                          ),
+                        ),
+                        //System Tray
+                        Container(
+                          height: isSmallScreen ? 100 : 500,
+                          width: isSmallScreen
+                              ? double.infinity
+                              : MediaQuery.of(context).size.width * 0.05,
+                          child: Card(
+                            child: Flex(
+                              direction: isSmallScreen
+                                  ? Axis.horizontal
+                                  : Axis.vertical,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  onPressed: () async {
+                                    try {
+                                      _runSimulation();
+                                    } catch (error) {
+                                      await _showErrorDialog();
+                                    }
+                                  },
+                                  icon: const Icon(
+                                    Icons.play_circle_outlined,
+                                    color: Colors.green,
+                                    size: 35,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    print('stop');
+                                  },
+                                  icon: const Icon(
+                                    Icons.stop_circle_outlined,
+                                    color: Colors.red,
+                                    size: 35,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () async {
+                                    await _infoDialog();
+                                  },
+                                  icon: const Icon(
+                                    Icons.info,
+                                    color: Colors.grey,
+                                    size: 35,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        //Output Screen
+                        _editAndOutputParentWidget(
+                          'Output',
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: instructionList.length,
+                              itemBuilder: (_, index) => DispInstruction(
+                                instructionList[index],
+                                _numberOfLines,
                               ),
                             ),
                           ),
                           isSmallScreen,
                         ),
-                      ),
-                      //System Tray
-                      Container(
-                        height: isSmallScreen ? 100 : 500,
-                        width: isSmallScreen
-                            ? double.infinity
-                            : MediaQuery.of(context).size.width * 0.05,
-                        child: Card(
-                          child: Flex(
-                            direction:
-                                isSmallScreen ? Axis.horizontal : Axis.vertical,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                      ],
+                    ),
+                    //Register Bar
+                    Container(
+                      height: 200,
+                      width: MediaQuery.of(context).size.width * 0.97,
+                      child: Card(
+                        //color: Colors.red,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
                             children: [
-                              IconButton(
-                                onPressed: () async {
-                                  try {
-                                    _runSimulation();
-                                  } catch (error) {
-                                    await _showErrorDialog();
-                                  }
-                                },
-                                icon: const Icon(
-                                  Icons.play_circle_outlined,
-                                  color: Colors.green,
-                                  size: 35,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  print('stop');
-                                },
-                                icon: const Icon(
-                                  Icons.stop_circle_outlined,
-                                  color: Colors.red,
-                                  size: 35,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () async {
-                                  await _infoDialog();
-                                },
-                                icon: const Icon(
-                                  Icons.info,
-                                  color: Colors.grey,
-                                  size: 35,
+                              _titleText('Register Data'),
+                              Expanded(
+                                //height: 150,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: x.length,
+                                  itemBuilder: (_, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '\$$index',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            '\$${TranslationUtilities.getRegisterName(index)}',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          Text(
+                                            '${x[index]}',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      //Output Screen
-                      _editAndOutputParentWidget(
-                        'Output',
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: instructionList.length,
-                            itemBuilder: (_, index) => DispInstruction(
-                              instructionList[index],
-                              _numberOfLines,
-                            ),
-                          ),
-                        ),
-                        isSmallScreen,
-                      ),
-                    ],
-                  ),
-                  //Register Bar
-                  Container(
-                    height: 200,
-                    width: MediaQuery.of(context).size.width * 0.97,
-                    child: Card(
-                      //color: Colors.red,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            _titleText('Register Data'),
-                            Expanded(
-                              //height: 150,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: x.length,
-                                itemBuilder: (_, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '\$$index',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          '\$${TranslationUtilities.getRegisterName(index)}',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        Text(
-                                          '${x[index]}',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
