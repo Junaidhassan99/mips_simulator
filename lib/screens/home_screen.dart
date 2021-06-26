@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   //Create an integer list of length 31 will be used as registers
-  List<int> x = List.filled(31, 0);
+  List<int> x = List.filled(32, 0);
   int _lineNumberUnderExecutuion = 1;
   int _numberOfLines = 0;
   bool _stopExecution = false;
