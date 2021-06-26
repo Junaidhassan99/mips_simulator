@@ -5,8 +5,7 @@ import 'package:mips_simulator/utilities/translation_utilties.dart';
 class DispInstruction extends StatelessWidget {
   final Instruction instruction;
   final int numberOfLines;
-  const DispInstruction(this.instruction, this.numberOfLines,
-      {Key? key})
+  const DispInstruction(this.instruction, this.numberOfLines, {Key? key})
       : super(key: key);
 
   String _nullHandler(String? text) {
@@ -54,7 +53,7 @@ class DispInstruction extends StatelessWidget {
                   Text("RD: ${_nullHandler(instruction.rd)}"),
                   //Text("Value: ${_nullhandler(instruction.value)}"),
                   Text(
-                      "Target Address: ${_nullHandlerForTarget(instruction.target, instruction.isTargetAValue)}"),
+                      "Target / Immediate Address: ${_nullHandlerForTarget(instruction.target, instruction.isTargetAValue)}"),
                 ],
               ),
               Column(
