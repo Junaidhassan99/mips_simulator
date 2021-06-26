@@ -34,10 +34,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _editAndOutputParentWidget(String title, Widget child) {
+  Widget _editAndOutputParentWidget(
+      String title, Widget child, bool isSmallScreen) {
     return Container(
       height: 500,
-      width: MediaQuery.of(context).size.width * 0.45,
+      width: isSmallScreen
+          ? double.infinity
+          : MediaQuery.of(context).size.width * 0.45,
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(15),
@@ -229,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     //testing
-
+    bool isSmallScreen = MediaQuery.of(context).size.width < 800;
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -250,7 +253,8 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  Row(
+                  Flex(
+                    direction: isSmallScreen ? Axis.vertical : Axis.horizontal,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       //Input Editor
@@ -271,14 +275,19 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           ),
+                          isSmallScreen,
                         ),
                       ),
                       //System Tray
                       Container(
-                        height: 500,
-                        width: MediaQuery.of(context).size.width * 0.05,
+                        height: isSmallScreen ? 100 : 500,
+                        width: isSmallScreen
+                            ? double.infinity
+                            : MediaQuery.of(context).size.width * 0.05,
                         child: Card(
-                          child: Column(
+                          child: Flex(
+                            direction:
+                                isSmallScreen ? Axis.horizontal : Axis.vertical,
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -322,62 +331,66 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
+                        isSmallScreen,
                       ),
                     ],
                   ),
                   //Register Bar
                   Container(
                     height: 200,
-                    width: double.infinity,
+                    width: MediaQuery.of(context).size.width * 0.97,
                     child: Card(
                       //color: Colors.red,
-                      child: Column(
-                        children: [
-                          _titleText('Register Data'),
-                          Expanded(
-                            //height: 150,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: x.length,
-                              itemBuilder: (_, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        '\$$index',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            _titleText('Register Data'),
+                            Expanded(
+                              //height: 150,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: x.length,
+                                itemBuilder: (_, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '\$$index',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        '\$${TranslationUtilities.getRegisterName(index)}',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.red,
+                                        const SizedBox(
+                                          height: 5,
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        height: 15,
-                                      ),
-                                      Text(
-                                        '${x[index]}',
-                                        style: TextStyle(
-                                          fontSize: 18,
+                                        Text(
+                                          '\$${TranslationUtilities.getRegisterName(index)}',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Text(
+                                          '${x[index]}',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
