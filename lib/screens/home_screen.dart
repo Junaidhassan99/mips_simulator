@@ -15,6 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<int> x = List.filled(31, 0);
   int _lineNumberUnderExecutuion = 0;
   int _numberOfLines = 0;
+  bool _stopExecution = false;
 
   List<Instruction> instructionList = [];
   List<Branch> branchList = [];
@@ -302,6 +303,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 icon: const Icon(
                                   Icons.play_circle_outlined,
                                   color: Colors.green,
+                                  size: 35,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  print('stop');
+                                },
+                                icon: const Icon(
+                                  Icons.stop_circle_outlined,
+                                  color: Colors.red,
                                   size: 35,
                                 ),
                               ),
