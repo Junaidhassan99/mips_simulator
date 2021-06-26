@@ -14,6 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
   //Create an integer list of length 31 will be used as registers
   List<int> x = List.filled(31, 0);
   int _lineNumberUnderExecutuion = 0;
+  int _numberOfLines = 0;
 
   List<Instruction> instructionList = [];
   List<Branch> branchList = [];
@@ -53,10 +54,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _runSimulation() {
     _lineNumberUnderExecutuion = 0;
+    _numberOfLines = 0;
 
     List<String> inputStringList = _textEditorController.text.split('\n');
     List<String> addressList =
         TranslationUtilities.getHexAddressesOfLength(inputStringList.length);
+
+    _numberOfLines = inputStringList.length;
 
     instructionList = [];
     branchList = [];
@@ -314,6 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemCount: instructionList.length,
                             itemBuilder: (_, index) => DispInstruction(
                               instructionList[index],
+                              _numberOfLines,
                             ),
                           ),
                         ),

@@ -26,7 +26,9 @@ class TranslationUtilities {
     return resultList;
   }
 
-  static String decodeAccordingToType(Instruction instruction) {
+  static String decodeAccordingToType(Instruction instruction, int n) {
+    final List<String> instructionAddressesList = getHexAddressesOfLength(n);
+
     String? targetIfAny = '${instruction.target}';
     if (instruction.target != null && !instruction.isTargetAValue) {
       targetIfAny = '(0x$targetIfAny)';
@@ -38,6 +40,7 @@ class TranslationUtilities {
       //Convert Hex Target to Binary
       //Drop first 4 bits
       //Drop last 2 bits
+      //instruction.target is directly being used
       targetIfAny = fillBinaryString(hexToBinary(instruction.target!), 32)
           .substring(4, 30);
 
@@ -47,6 +50,37 @@ class TranslationUtilities {
 
       return "${instruction.op_code} $targetIfAny";
     } else {
+      if (!instruction.isTargetAValue) {
+        //branch-index - (current-index + 1)
+        //j - (c + 1)
+
+        int j = instructionAddressesList.indexOf(instruction.target!);
+        int c =
+            instructionAddressesList.indexOf(instruction.instructionAddress);
+        int offset = j - (c + 1);
+
+        String binaryResult = '';
+
+        if (offset >= 0) {
+          binaryResult = decimalToBinary(offset);
+        } else {
+          //Finding 2's complement of conversion
+          decimalToBinary(offset).split('').forEach((element) {
+            if (element == '0') {
+              element = '1';
+            } else {
+              element = '0';
+            }
+
+            binaryResult += element;
+          });
+
+          binaryResult = decimalToBinary(binaryToDecimal(binaryResult) + 1);
+        }
+
+        targetIfAny = fillBinaryString(binaryResult, 16);
+      }
+
       return "${instruction.op_code} ${instruction.rs} ${instruction.rt} $targetIfAny";
     }
   }

@@ -4,7 +4,10 @@ import 'package:mips_simulator/utilities/translation_utilties.dart';
 
 class DispInstruction extends StatelessWidget {
   final Instruction instruction;
-  const DispInstruction(this.instruction, {Key? key}) : super(key: key);
+  final int numberOfLines;
+  const DispInstruction(this.instruction, this.numberOfLines,
+      {Key? key})
+      : super(key: key);
 
   String _nullHandler(String? text) {
     return text ?? '---';
@@ -27,7 +30,7 @@ class DispInstruction extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Machine Code: ${TranslationUtilities.decodeAccordingToType(instruction)}',
+            'Machine Code: ${TranslationUtilities.decodeAccordingToType(instruction, numberOfLines)}',
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(
