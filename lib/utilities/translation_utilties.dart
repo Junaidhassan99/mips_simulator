@@ -121,7 +121,9 @@ class TranslationUtilities {
           }
       }
 
-      mX[binaryToDecimal(instruction.rd!)] = result;
+      if (instruction.funct != '011000') {
+        mX[binaryToDecimal(instruction.rd!)] = result;
+      }
       resultString = result.toString();
     } else if (instruction.type == 'j') {
       String result = '';
@@ -402,8 +404,6 @@ class TranslationUtilities {
         case '100000':
         //sub
         case '100010':
-        //mult
-        case '011000':
           {
             //rd
             String mRd =
@@ -430,6 +430,32 @@ class TranslationUtilities {
                 fillBinaryString(decimalToBinary(getRegisterSerial(mRt)), 5);
             //print(instruction.rt);
 
+            break;
+          }
+        //mult
+        case '011000':
+          {
+            //rd
+            String mRd = fillBinaryString('', 5);
+
+            //rs
+            String mRs =
+                temp.substring(temp.indexOf('\$') + 1, temp.indexOf(','));
+            temp = temp.substring(temp.indexOf(',') + 1, temp.length).trim();
+
+            //rt
+            String mRt = temp.substring(temp.indexOf('\$') + 1, temp.length);
+
+            instruction.rd = mRd;
+            //print(instruction.rd);
+
+            instruction.rs =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRs)), 5);
+            //print(instruction.rs);
+
+            instruction.rt =
+                fillBinaryString(decimalToBinary(getRegisterSerial(mRt)), 5);
+            //print(instruction.rt);
             break;
           }
 
