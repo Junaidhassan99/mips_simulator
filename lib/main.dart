@@ -11,6 +11,7 @@ class MipsSimulator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Simulator for MIPS',
       home: HomeScreen(),
     );
   }
